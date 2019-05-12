@@ -59,11 +59,6 @@ class MogoQueue():
             self.repair()
             raise KeyError
 
-
-    def pop_title(self, url):
-        record = self.collection.find_one({'_id': url})
-        return record['title']
-
     def peek(self):
         """这个函数是取出状态为 OUTSTANDING的文档并返回_id(URL)"""
         record = self.collection.find_one({'status': self.OUTSTANDING})
@@ -88,17 +83,3 @@ class MogoQueue():
     def clear(self):
         """这个函数只有第一次才调用、后续不要调用、因为这是删库啊！"""
         self.collection.drop()
-
-    def num(self):
-        record = self.collection.find(
-            {'status': self.PROCESSING}
-        ).count()
-        return record
-
-    def reset(self):
-        record = self.collection.update_many(
-            {
-                'status': self.PROCESSING
-            },
-            {'$set': {'status': self.OUTSTANDING}}
-        )
