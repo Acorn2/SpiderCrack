@@ -29,8 +29,10 @@ def mzitu_crawler(max_threads=10):
                 print('队列没有数据')
                 break
             else:
-                download_photo(photo)
-                crawl_queue.complete(url)  ##设置为完成状态
+                download_flag = download_photo(photo)
+                if download_flag:
+                    crawl_queue.complete(url)  ##设置为完成状态
+
 
     def download_photo(photo):
         title = photo['title']
@@ -47,7 +49,9 @@ def mzitu_crawler(max_threads=10):
                     fw.write(response.content)
             else:
                 print('Already Download', file_path)
+            return True
         else:
+            return False
             print('Failed to Save Image')
 
     threads = []
